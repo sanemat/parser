@@ -95,7 +95,7 @@ module Parser
       clean_options = options.dup
       include_stdin = clean_options.delete('-')
       if include_stdin
-        while line = options.send(:gets)
+        while line = STDIN.gets
           @fragments << line
         end
       end
