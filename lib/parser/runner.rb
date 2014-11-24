@@ -92,10 +92,17 @@ module Parser
     end
 
     def parse_options(options)
-      @slop.parse!(options)
+      clean_options = options.dup
+      include_stdin = clean_options.delete('-')
+      if include_stdin
+        while line = options.send(:gets)
+          @fragments << line
+        end
+      end
+      @slop.parse!(clean_options)
 
       # Slop has just removed recognized options from `options`.
-      options.each do |file_or_dir|
+      clean_options.each do |file_or_dir|
         if File.directory?(file_or_dir)
           Find.find(file_or_dir) do |path|
             @files << path if path.end_with? '.rb'
